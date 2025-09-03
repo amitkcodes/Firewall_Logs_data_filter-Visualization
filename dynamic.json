@@ -1,0 +1,116 @@
+{
+  "id": null,
+  "title": "Dynamic",
+  "timezone": "browser",
+  "schemaVersion": 38,
+  "version": 3,
+  "refresh": "30s",
+  "templating": {
+    "list": [
+      {
+        "name": "interval",
+        "type": "custom",
+        "label": "Time Interval",
+        "query": "day,month,year",
+        "current": { "text": "day", "value": "day" },
+        "options": [
+          { "text": "day", "value": "day" },
+          { "text": "month", "value": "month" },
+          { "text": "year", "value": "year" }
+        ]
+      }
+    ]
+  },
+  "panels": [
+    {
+      "title": "📈 Hits Over Time (Dynamic)",
+      "type": "timeseries",
+      "datasource": { "type": "postgres", "uid": "dewcfey7k6hvkf" },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "time_series",
+          "rawSql": "SELECT date_trunc('${interval}', ts) AS time, COUNT(*) AS hits FROM ntp_logs_v WHERE $__timeFilter(ts) GROUP BY 1 ORDER BY 1;"
+        }
+      ],
+      "gridPos": { "x": 0, "y": 0, "w": 24, "h": 7 }
+    },
+    {
+      "title": "📊 2020 vs 2025 Hits Comparison",
+      "type": "timeseries",
+      "datasource": { "type": "postgres", "uid": "dewcfey7k6hvkf" },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "time_series",
+          "rawSql": "SELECT date_trunc('${interval}', ts) AS time, '2020' AS year_label, COUNT(*) AS hits FROM ntp_logs_v WHERE EXTRACT(YEAR FROM ts)=2020 AND $__timeFilter(ts) GROUP BY 1 UNION ALL SELECT date_trunc('${interval}', ts) AS time, '2025' AS year_label, COUNT(*) AS hits FROM ntp_logs_v WHERE EXTRACT(YEAR FROM ts)=2025 AND $__timeFilter(ts) GROUP BY 1 ORDER BY time;"
+        }
+      ],
+      "gridPos": { "x": 0, "y": 7, "w": 24, "h": 7 }
+    },
+    {
+      "title": "🌍 Country-wise Hits (Top 5)",
+      "type": "timeseries",
+      "datasource": { "type": "postgres", "uid": "dewcfey7k6hvkf" },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "time_series",
+          "rawSql": "SELECT date_trunc('${interval}', ts) AS time, srccountry, COUNT(*) AS hits FROM ntp_logs_v WHERE $__timeFilter(ts) GROUP BY 1, srccountry ORDER BY 1, hits DESC LIMIT 5;"
+        }
+      ],
+      "gridPos": { "x": 0, "y": 14, "w": 24, "h": 7 }
+    },
+    {
+      "title": "🏆 Top 5 Countries (2020 vs 2025)",
+      "type": "barchart",
+      "datasource": { "type": "postgres", "uid": "dewcfey7k6hvkf" },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "table",
+          "rawSql": "SELECT srccountry, '2020' AS year_label, COUNT(*) AS hits FROM ntp_logs_v WHERE EXTRACT(YEAR FROM ts)=2020 AND $__timeFilter(ts) GROUP BY srccountry ORDER BY hits DESC LIMIT 5 UNION ALL SELECT srccountry, '2025' AS year_label, COUNT(*) AS hits FROM ntp_logs_v WHERE EXTRACT(YEAR FROM ts)=2025 AND $__timeFilter(ts) GROUP BY srccountry ORDER BY hits DESC LIMIT 5;"
+        }
+      ],
+      "gridPos": { "x": 0, "y": 21, "w": 12, "h": 6 }
+    },
+    {
+      "title": "🔥 Top 5 IPs (2020 vs 2025)",
+      "type": "barchart",
+      "datasource": { "type": "postgres", "uid": "dewcfey7k6hvkf" },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "table",
+          "rawSql": "SELECT srcip, '2020' AS year_label, COUNT(*) AS hits FROM ntp_logs_v WHERE EXTRACT(YEAR FROM ts)=2020 AND $__timeFilter(ts) GROUP BY srcip ORDER BY hits DESC LIMIT 5 UNION ALL SELECT srcip, '2025' AS year_label, COUNT(*) AS hits FROM ntp_logs_v WHERE EXTRACT(YEAR FROM ts)=2025 AND $__timeFilter(ts) GROUP BY srcip ORDER BY hits DESC LIMIT 5;"
+        }
+      ],
+      "gridPos": { "x": 12, "y": 21, "w": 12, "h": 6 }
+    },
+    {
+      "title": "🔑 Unique IP Count",
+      "type": "stat",
+      "datasource": { "type": "postgres", "uid": "dewcfey7k6hvkf" },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "table",
+          "rawSql": "SELECT COUNT(DISTINCT srcip) AS unique_ips FROM ntp_logs_v WHERE $__timeFilter(ts);"
+        }
+      ],
+      "gridPos": { "x": 0, "y": 27, "w": 12, "h": 5 }
+    },
+    {
+      "title": "📡 Sent vs Received Bytes",
+      "type": "timeseries",
+      "datasource": { "type": "postgres", "uid": "dewcfey7k6hvkf" },
+      "targets": [
+        {
+          "refId": "A",
+          "rawSql": "SELECT date_trunc('${interval}', ts) AS time, SUM(sentbyte) AS sent, SUM(rcvdbyte) AS recv FROM ntp_logs_v WHERE $__timeFilter(ts) GROUP BY 1 ORDER BY 1;"
+        }
+      ],
+      "gridPos": { "x": 12, "y": 27, "w": 12, "h": 8 }
+    }
+  ]
+}

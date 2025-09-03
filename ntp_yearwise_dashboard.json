@@ -1,0 +1,197 @@
+{
+    "id": null,
+    "title": "NTP Year-wise Dashboard (2020 vs 2025)",
+    "timezone": "browser",
+    "schemaVersion": 38,
+    "version": 1,
+    "refresh": "30s",
+    "panels": [
+      {
+        "title": "📈 Daily Hits (2020)",
+        "type": "timeseries",
+        "datasource": { "type": "postgres", "uid": "dewcfey7k6hvkf" },
+        "targets": [
+          {
+            "refId": "A",
+            "format": "time_series",
+            "rawSql": "SELECT date_trunc('day', ts) AS time, COUNT(*) AS hits FROM ntp_logs_v WHERE EXTRACT(YEAR FROM ts)=2020 AND $__timeFilter(ts) GROUP BY 1 ORDER BY 1;"
+          }
+        ],
+        "gridPos": { "x": 0, "y": 0, "w": 12, "h": 7 }
+      },
+      {
+        "title": "📈 Daily Hits (2025)",
+        "type": "timeseries",
+        "datasource": { "type": "postgres", "uid": "dewcfey7k6hvkf" },
+        "targets": [
+          {
+            "refId": "A",
+            "format": "time_series",
+            "rawSql": "SELECT date_trunc('day', ts) AS time, COUNT(*) AS hits FROM ntp_logs_v WHERE EXTRACT(YEAR FROM ts)=2025 AND $__timeFilter(ts) GROUP BY 1 ORDER BY 1;"
+          }
+        ],
+        "gridPos": { "x": 12, "y": 0, "w": 12, "h": 7 }
+      },
+  
+      {
+        "title": "📊 Monthly Hits (2020)",
+        "type": "barchart",
+        "datasource": { "type": "postgres", "uid": "dewcfey7k6hvkf" },
+        "targets": [
+          {
+            "refId": "A",
+            "format": "table",
+            "rawSql": "SELECT date_trunc('month', ts) AS time, COUNT(*) AS hits FROM ntp_logs_v WHERE EXTRACT(YEAR FROM ts)=2020 AND $__timeFilter(ts) GROUP BY 1 ORDER BY 1;"
+          }
+        ],
+        "gridPos": { "x": 0, "y": 7, "w": 12, "h": 7 }
+      },
+      {
+        "title": "📊 Monthly Hits (2025)",
+        "type": "barchart",
+        "datasource": { "type": "postgres", "uid": "dewcfey7k6hvkf" },
+        "targets": [
+          {
+            "refId": "A",
+            "format": "table",
+            "rawSql": "SELECT date_trunc('month', ts) AS time, COUNT(*) AS hits FROM ntp_logs_v WHERE EXTRACT(YEAR FROM ts)=2025 AND $__timeFilter(ts) GROUP BY 1 ORDER BY 1;"
+          }
+        ],
+        "gridPos": { "x": 12, "y": 7, "w": 12, "h": 7 }
+      },
+  
+      {
+        "title": "🌍 Country-wise Hits (Top 5, 2020)",
+        "type": "timeseries",
+        "datasource": { "type": "postgres", "uid": "dewcfey7k6hvkf" },
+        "targets": [
+          {
+            "refId": "A",
+            "format": "time_series",
+            "rawSql": "SELECT date_trunc('day', ts) AS time, srccountry, COUNT(*) AS hits FROM ntp_logs_v WHERE EXTRACT(YEAR FROM ts)=2020 AND $__timeFilter(ts) GROUP BY 1, srccountry ORDER BY 1;"
+          }
+        ],
+        "gridPos": { "x": 0, "y": 14, "w": 12, "h": 7 }
+      },
+      {
+        "title": "🌍 Country-wise Hits (Top 5, 2025)",
+        "type": "timeseries",
+        "datasource": { "type": "postgres", "uid": "dewcfey7k6hvkf" },
+        "targets": [
+          {
+            "refId": "A",
+            "format": "time_series",
+            "rawSql": "SELECT date_trunc('day', ts) AS time, srccountry, COUNT(*) AS hits FROM ntp_logs_v WHERE EXTRACT(YEAR FROM ts)=2025 AND $__timeFilter(ts) GROUP BY 1, srccountry ORDER BY 1;"
+          }
+        ],
+        "gridPos": { "x": 12, "y": 14, "w": 12, "h": 7 }
+      },
+  
+      {
+        "title": "🏆 Top 5 Countries (2020)",
+        "type": "table",
+        "datasource": { "type": "postgres", "uid": "dewcfey7k6hvkf" },
+        "targets": [
+          {
+            "refId": "A",
+            "format": "table",
+            "rawSql": "SELECT srccountry, COUNT(*) AS hits FROM ntp_logs_v WHERE EXTRACT(YEAR FROM ts)=2020 GROUP BY srccountry ORDER BY hits DESC LIMIT 5;"
+          }
+        ],
+        "gridPos": { "x": 0, "y": 21, "w": 12, "h": 6 }
+      },
+      {
+        "title": "🏆 Top 5 Countries (2025)",
+        "type": "table",
+        "datasource": { "type": "postgres", "uid": "dewcfey7k6hvkf" },
+        "targets": [
+          {
+            "refId": "A",
+            "format": "table",
+            "rawSql": "SELECT srccountry, COUNT(*) AS hits FROM ntp_logs_v WHERE EXTRACT(YEAR FROM ts)=2025 GROUP BY srccountry ORDER BY hits DESC LIMIT 5;"
+          }
+        ],
+        "gridPos": { "x": 12, "y": 21, "w": 12, "h": 6 }
+      },
+  
+      {
+        "title": "🔑 Unique IP Count (2020)",
+        "type": "stat",
+        "datasource": { "type": "postgres", "uid": "dewcfey7k6hvkf" },
+        "targets": [
+          {
+            "refId": "A",
+            "format": "table",
+            "rawSql": "SELECT COUNT(DISTINCT srcip) AS unique_ips FROM ntp_logs_v WHERE EXTRACT(YEAR FROM ts)=2020;"
+          }
+        ],
+        "gridPos": { "x": 0, "y": 27, "w": 12, "h": 5 }
+      },
+      {
+        "title": "🔑 Unique IP Count (2025)",
+        "type": "stat",
+        "datasource": { "type": "postgres", "uid": "dewcfey7k6hvkf" },
+        "targets": [
+          {
+            "refId": "A",
+            "format": "table",
+            "rawSql": "SELECT COUNT(DISTINCT srcip) AS unique_ips FROM ntp_logs_v WHERE EXTRACT(YEAR FROM ts)=2025;"
+          }
+        ],
+        "gridPos": { "x": 12, "y": 27, "w": 12, "h": 5 }
+      },
+  
+      {
+        "title": "🔥 Top 5 IPs (2020)",
+        "type": "piechart",
+        "datasource": { "type": "postgres", "uid": "dewcfey7k6hvkf" },
+        "targets": [
+          {
+            "refId": "A",
+            "format": "table",
+            "rawSql": "SELECT srcip, COUNT(*) AS hits FROM ntp_logs_v WHERE EXTRACT(YEAR FROM ts)=2020 GROUP BY srcip ORDER BY hits DESC LIMIT 5;"
+          }
+        ],
+        "gridPos": { "x": 0, "y": 32, "w": 12, "h": 7 }
+      },
+      {
+        "title": "🔥 Top 5 IPs (2025)",
+        "type": "piechart",
+        "datasource": { "type": "postgres", "uid": "dewcfey7k6hvkf" },
+        "targets": [
+          {
+            "refId": "A",
+            "format": "table",
+            "rawSql": "SELECT srcip, COUNT(*) AS hits FROM ntp_logs_v WHERE EXTRACT(YEAR FROM ts)=2025 GROUP BY srcip ORDER BY hits DESC LIMIT 5;"
+          }
+        ],
+        "gridPos": { "x": 12, "y": 32, "w": 12, "h": 7 }
+      },
+  
+      {
+        "title": "📡 Sent vs Received Bytes (2020)",
+        "type": "timeseries",
+        "datasource": { "type": "postgres", "uid": "dewcfey7k6hvkf" },
+        "targets": [
+          {
+            "refId": "A",
+            "rawSql": "SELECT date_trunc('day', ts) AS time, SUM(sentbyte) AS sent, SUM(rcvdbyte) AS recv FROM ntp_logs_v WHERE EXTRACT(YEAR FROM ts)=2020 AND $__timeFilter(ts) GROUP BY 1 ORDER BY 1;"
+          }
+        ],
+        "gridPos": { "x": 0, "y": 39, "w": 12, "h": 8 }
+      },
+      {
+        "title": "📡 Sent vs Received Bytes (2025)",
+        "type": "timeseries",
+        "datasource": { "type": "postgres", "uid": "dewcfey7k6hvkf" },
+        "targets": [
+          {
+            "refId": "A",
+            "rawSql": "SELECT date_trunc('day', ts) AS time, SUM(sentbyte) AS sent, SUM(rcvdbyte) AS recv FROM ntp_logs_v WHERE EXTRACT(YEAR FROM ts)=2025 AND $__timeFilter(ts) GROUP BY 1 ORDER BY 1;"
+          }
+        ],
+        "gridPos": { "x": 12, "y": 39, "w": 12, "h": 8 }
+      }
+    ]
+  }
+  
